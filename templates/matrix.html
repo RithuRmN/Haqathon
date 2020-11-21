@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="{{ url_for('static', filename='jquery-3.2.1.min.js') }}"></script>
+<style>
+body{
+	font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+}
+#pred_table {
+  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 34%;
+  table-layout:fixed;
+
+}
+
+#pred_table td, #pred_table th {
+  border: 1px solid #ddd;
+  padding: 11px;
+  color:#004d38;
+  word-wrap: break-word;
+}
+
+
+#pred_table tr:hover {background-color: #ddd;}
+
+#pred_table th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: #4CAF50;
+  color: white;
+}
+#main{
+	width:90%;
+	height:100%;
+	margin:100px;
+	
+}
+#nav_bar{
+	width:101%;
+	height:70px;
+	background-color:black;
+	margin:-8px;
+	position:fixed;
+	top:0;	
+}
+#choose_csv{
+	width:100%;
+	
+}
+#output{
+	width:100%;
+	display:none;
+	
+		
+	
+}
+#output_head{
+	width:100%;
+	display:block;
+	background-color:red;
+	
+		
+	
+}		
+#csv_vector{
+	width:200px;
+	height:200px;
+	border-radius:90px 90px 90px 90px;
+}
+#btn_choose{
+	width:170px;
+	height:40px;
+	color:white;
+	background-color:#4CAF50;
+	border: 1px solid #ddd;
+	font-size:20px;
+}
+#btn_choose:hover{
+	background-color:#2e6e30;
+	cursor:pointer;
+}	
+h1{
+	color:white;
+	margin-left:50px;
+	float:left;
+}
+#home{
+	color:White;
+	text-decoration:none;
+	text-align:left;
+	float:right;
+	padding:30px;
+	
+}
+#loading{
+	width:100%;
+	height:100%;
+	opacity:.9;
+	position:fixed;
+	margin: 0em;
+        left: 0em; 
+        top: 0em;
+	display:none;
+	background-color:white;
+	
+}
+#loading_image
+{
+	margin-top:150px;
+	
+	
+}
+
+p {
+  
+  text-align: justify;
+  line-height:23px;
+  word-wrap: break-word
+  
+}
+.desc{
+	width:200px;
+}
+
+.sticky {
+  position: fixed;
+  top: 0;
+  width: 50%;
+  margin-top:60px;
+  margin-right:-100px;
+}
+
+.sticky + .content {
+  padding-top: 102px;
+  margin-top:100px;
+}
+			
+</style>
+</head>
+<body>
+<div id='loading' >
+	<center><img src="{{ url_for('static', filename='loading2.gif') }}" id="loading_image">
+</div>
+<div id="nav_bar"><h1>Auto Bug Triaging for Component Identification</h1> <a href="#" id="home" style="margin-right:60px"><b>About</b></a><a href="/" id="home" style="margin-right:0px"><b>Home</b></a></div>
+<div id="main">
+	<div id="choose_csv">
+	<center>
+		<img src="{{ url_for('static', filename='choose_csv.png') }}" id="csv_vector">
+		<br><br><button id="btn_choose"><b>Go Home</b></button>
+	</center>
+	</div>
+	
+</div>	<center>
+<table class="matrix" id="pred_table">
+
+<tr>
+
+</tr>
+<td><b>Labels<b></td>
+{% for label in labels %}
+
+        <th>{{ label }}</th>
+{% endfor %}
+</tr>
+
+{% for list in Confusion_matrix %}
+	<tr>
+	<th><b>{{ labels[loop.index-1]}}</b></th>
+	{% for item in list %}
+        	<td> {{ item }}</td>
+        {% endfor %}
+        </tr>	
+{% endfor %}
+</table>
+
+
+</body>
+<script>
+
+$("document").ready(function(){
+    
+    $("#btn_choose").click(function(){
+    	location.href="/";
+        });
+    });
+</script>
+<script>
+window.onscroll = function() {myFunction()};
+
+var header = document.getElementById("output_head");
+var sticky = header.offsetTop;
+
+function myFunction() {
+  if (window.pageYOffset > sticky) {
+    header.classList.add("sticky");
+    header.style.width="89.2%";
+  } else {
+    header.classList.remove("sticky");
+    header.style.width="100%";
+  }
+}
+</script>
+</html>
+

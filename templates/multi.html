@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="{{ url_for('static', filename='jquery-3.2.1.min.js') }}"></script>
+<style>
+body{
+	font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+}
+#pred_table {
+  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+  table-layout:fixed;
+
+}
+
+#pred_table td, #pred_table th {
+  border: 1px solid #ddd;
+  padding: 11px;
+  color:#004d38;
+  word-wrap: break-word;
+}
+
+#pred_table tr:nth-child(even){background-color: #f2f2f2;}
+
+#pred_table tr:hover {background-color: #ddd;}
+
+#pred_table th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: #4CAF50;
+  color: white;
+}
+#main{
+	width:90%;
+	height:100%;
+	margin:100px;
+	
+}
+#nav_bar{
+	width:101%;
+	height:70px;
+	background-color:black;
+	margin:-8px;
+	position:fixed;
+	top:0;	
+}
+#choose_csv{
+	width:100%;
+	
+}
+#output{
+	width:100%;
+	display:none;
+	
+		
+	
+}
+#output_head{
+	width:100%;
+	display:block;
+	background-color:red;
+	
+		
+	
+}		
+#csv_vector{
+	width:200px;
+	height:200px;
+	border-radius:90px 90px 90px 90px;
+}
+#confusion_matrix{
+	width:170px;
+	height:40px;
+	color:white;
+	background-color:#4CAF50;
+	border: 1px solid #ddd;
+	font-size:18px;
+	font-weight: bold;
+	
+}
+#btn_choose{
+	width:170px;
+	height:40px;
+	color:white;
+	background-color:#4CAF50;
+	border: 1px solid #ddd;
+	font-size:20px;
+	
+}
+#confusion_matrix:hover{
+	background-color:#2e6e30;
+	cursor:pointer;
+}
+
+#btn_choose:hover{
+	background-color:#2e6e30;
+	cursor:pointer;
+}	
+h1{
+	color:white;
+	margin-left:50px;
+	float:left;
+}
+#home{
+	color:White;
+	text-decoration:none;
+	text-align:left;
+	float:right;
+	padding:30px;
+	
+}
+#loading{
+	width:100%;
+	height:100%;
+	opacity:.9;
+	position:fixed;
+	margin: 0em;
+        left: 0em; 
+        top: 0em;
+	display:none;
+	background-color:white;
+	
+}
+#loading_image
+{
+	margin-top:150px;
+	
+	
+}
+
+p {
+  
+  text-align: justify;
+  line-height:23px;
+  word-wrap: break-word
+  
+}
+.desc{
+	width:200px;
+}
+
+.sticky {
+  position: fixed;
+  top: 0;
+  width: 50%;
+  margin-top:60px;
+  margin-right:-100px;
+}
+
+.sticky + .content {
+  padding-top: 102px;
+  margin-top:100px;
+}
+			
+</style>
+</head>
+<body>
+<div id='loading' >
+	<center><img src="{{ url_for('static', filename='loading2.gif') }}" id="loading_image">
+</div>
+<div id="nav_bar"><h1>Auto Bug Triaging for Component Identification</h1> <a href="#" id="home" style="margin-right:60px"><b>About</b></a><a href="#" id="home" style="margin-right:0px"><b>Home</b></a></div>
+<div id="main">
+	<div id="choose_csv">
+	<center>
+		<img src="{{ url_for('static', filename='choose_csv.png') }}" id="csv_vector">
+		<br><br><button id="btn_choose"><b>Choose File</b></button><br><br><br>
+	</center>
+	<span id="matrix" style="display:none;">
+		<form method="post" action="/matrix"><br><input type="submit" value="Confusion_matrix" id="confusion_matrix" align="right"><br></form>
+	</span>
+	</div>
+	<div id="output_head">
+	
+		
+	</div>
+	<div id="output">
+		
+	</div>
+</div>	
+
+</body>
+<script>
+
+$("document").ready(function(){
+    
+    $("#btn_choose").click(function(){
+    	var table_html="<table id='pred_table'><tr><th width='10px'>Sl.No</th><th width='100px'>Short Description</th><th width='150px'>Long Description</th><th width='50px'>Actual Component</th><th width='50px'>Predicted Component</th></tr></table>";
+    	var table_html2="<table id='pred_table'>";
+        var message = "hai"
+        $.ajax({
+            url: "/api",
+            type: "POST",
+             beforeSend: function(){
+   		 $('#loading').show();
+  		},
+            contentType: "application/json",
+            data: JSON.stringify({"message": message})
+            
+        }).done(function(data) {
+            $('#loading').hide();
+            console.log(data);
+            console.log(data[0].length);
+            for(i=0;i<data[0].length;i++)
+            {
+           	 table_html2=table_html2+"<tr><td width='10px'>"+(i+1)+"</td><td width='100px'><p>"+data[2][i]+"</p></td><td width='150px'><p>"+data[1][i]+"</p></td><td width='50px'>"+data[0][i]+"</td><td width='50px'>"+data[3][i]+"</td></tr>";
+            }
+            table_html2=table_html2+"</table>";
+            $("#output_head").html(table_html);
+            $("#output").html(table_html2);
+            
+            
+            $("#output").css("display", "block");
+            $("#matrix").css("display", "block");
+        });
+    });
+   
+});
+</script>
+<script>
+window.onscroll = function() {myFunction()};
+
+var header = document.getElementById("output_head");
+var sticky = header.offsetTop;
+
+function myFunction() {
+  if (window.pageYOffset > sticky) {
+    header.classList.add("sticky");
+    header.style.width="89.2%";
+  } else {
+    header.classList.remove("sticky");
+    header.style.width="100%";
+  }
+}
+</script>
+</html>
+
